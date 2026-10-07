@@ -1,0 +1,15 @@
+resources:
+  jobs:
+    raw_landing_ingestion_job:
+      name: "[${bundle.target}] Daily Raw Ingestion Job"
+
+      tasks:
+        - task_key: ingest_sources
+          spark_python_task:
+            python_file: ../src/ingest_raw_sources.py
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "2"

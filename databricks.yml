@@ -1,0 +1,38 @@
+bundle:
+  name: e2e_fintech_pipeline
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: https://dbc-829caf13-0307.cloud.databricks.com
+      root_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: catalog_dev
+      schema: fintech_payments
+      base_volume: /Volumes/catalog_dev/fintech_payments/landing_volume
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-829caf13-0307.cloud.databricks.com
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: catalog_prod
+      schema: fintech_payments
+      base_volume: /Volumes/catalog_prod/fintech_payments/landing_volume
+
+variables:
+  catalog:
+    description: "Target catalog for tables and volumes"
+    default: catalog_dev
+  schema:
+    description: "Target database schema"
+    default: fintech_payments
+  base_volume:
+    description: "Landing volume root path"
+    default: /Volumes/catalog_dev/fintech_payments/landing_volume
