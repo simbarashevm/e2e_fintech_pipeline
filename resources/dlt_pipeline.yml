@@ -1,0 +1,12 @@
+resources:
+  pipelines:
+    fintech_declarative_pipeline:
+      name: "[${bundle.target}] Fintech Declarative Pipeline"
+      catalog: ${var.catalog}
+      target: ${var.schema}
+      development: true
+      continuous: false
+      serverless: true
+      libraries:
+        - file:
+            path: ../src/pipeline.py

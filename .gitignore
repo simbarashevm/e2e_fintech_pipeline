@@ -1,0 +1,12 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Databricks local state
+.databricks/
+
+# OS files
+.DS_Store

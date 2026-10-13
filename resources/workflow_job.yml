@@ -1,0 +1,36 @@
+resources:
+  jobs:
+    fintech_end_to_end_workflow:
+      name: "[${bundle.target}] Fintech End-to-End ETL Workflow"
+
+      schedule:
+        quartz_cron_expression: "0 0 2 * * ?"
+        timezone_id: "UTC"
+        pause_status: "UNPAUSED"
+
+      tasks:
+        # Task 1: Ingest raw files from volume partitions
+        - task_key: Ingest_Raw_Sources
+          spark_python_task:
+            python_file: ../src/ingest_raw_sources.py
+          environment_key: default
+
+        # Task 2: Execute Declarative PySpark Pipeline (Bronze -> Silver -> Gold)
+        - task_key: Run_Declarative_Pipeline
+          depends_on:
+            - task_key: Ingest_Raw_Sources
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.fintech_declarative_pipeline.id}
+
+        # Task 3: Execute Post-Pipeline Data Quality & Threshold Audit
+        - task_key: Audit_Data_Quality_And_Alert
+          depends_on:
+            - task_key: Run_Declarative_Pipeline
+          spark_python_task:
+            python_file: ../src/audit_data_quality.py
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "2"
